@@ -1,5 +1,5 @@
 /**
- * Run like: $ gradle test --tests "com.williamfiset.algorithms.strings.LongestCommonSubstringTest"
+ * Run like: $ bazel test //src/test/java/com/williamfiset/algorithms/strings:LongestCommonSubstringTest
  */
 package com.williamfiset.algorithms.strings;
 
@@ -9,7 +9,7 @@ import static com.williamfiset.algorithms.strings.LongestCommonSubstring.LcsSolv
 import com.google.common.collect.ImmutableList;
 import com.williamfiset.algorithms.utils.TestUtils;
 import java.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 public class LongestCommonSubstringTest {
 

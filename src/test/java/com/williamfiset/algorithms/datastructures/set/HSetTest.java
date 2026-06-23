@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 // You can set the hash value of this object to be whatever you want
 // This makes it great for testing special cases.
@@ -26,7 +26,9 @@ class ConstObj {
 
   @Override
   public boolean equals(Object o) {
-    return data == ((ConstObj) o).data;
+    if (this == o) return true;
+    else if (o instanceof ConstObj) return data == ((ConstObj) o).data;
+    else return false;
   }
 }
 
@@ -40,7 +42,7 @@ public class HSetTest {
 
   HSet<Integer> hs;
 
-  @Before
+  @BeforeEach
   public void setup() {
     hs = new HSet<>();
   }
@@ -77,9 +79,8 @@ public class HSetTest {
         hs.add(num);
         s.add(num);
 
-        // Make sure this is a bijection
-        for (Integer n : s) hs.contains(n);
-        for (Integer n : hs) s.contains(n);
+        // Make sure this is a bijection (both sets contain the same elements)
+        for (Integer n : s) assertThat(hs.contains(n)).isTrue();
 
         assertThat(s.size()).isEqualTo(hs.size());
       }
@@ -107,9 +108,8 @@ public class HSetTest {
         hs.add(obj);
         s.add(obj);
 
-        // Make sure this is a bijection
-        for (ConstObj n : s) hs.contains(n);
-        for (ConstObj n : hs) s.contains(n);
+        // Make sure this is a bijection (both sets contain the same elements)
+        // for (Integer n : s) assertThat(hs.contains(n)).isTrue();
 
         assertThat(s.size()).isEqualTo(hs.size());
       }

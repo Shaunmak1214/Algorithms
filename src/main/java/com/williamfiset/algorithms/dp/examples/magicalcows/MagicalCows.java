@@ -1,3 +1,5 @@
+package com.williamfiset.algorithms.dp.examples.magicalcows;
+
 /**
  * Solution to Magical Cows (https://open.kattis.com/problems/magicalcows)
  *
@@ -13,7 +15,6 @@
  * double the number of cows you always get an even number.
  */
 import java.io.*;
-import java.util.*;
 
 public class MagicalCows {
 

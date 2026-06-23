@@ -5,16 +5,13 @@
  *
  * <p>Tested against: UVA 10911 - Forming Quiz Teams
  *
- * <p>To Run: ./gradlew run -Palgorithm=dp.WeightedMaximumCardinalityMatchingIterative
+ * <p>To Run: bazel run //src/main/java/com/williamfiset/algorithms/dp:WeightedMaximumCardinalityMatchingIterative
  *
  * <p>Time Complexity: O(n^2 * 2^n)
  *
  * @author William Fiset
  */
 package com.williamfiset.algorithms.dp;
-
-import java.awt.geom.*;
-import java.util.*;
 
 // NOTE: This class does not support WMCM generally. It assumes a complete graph structure.
 public class WeightedMaximumCardinalityMatchingIterative implements MwpmInterface {

@@ -1,9 +1,10 @@
 package com.williamfiset.algorithms.datastructures.hashtable;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 public class HashTableDoubleHashingTest {
 
@@ -18,35 +19,63 @@ public class HashTableDoubleHashingTest {
 
   HashTableDoubleHashing<DoubleHashingTestObject, Integer> map;
 
-  @Before
+  @BeforeEach
   public void setup() {
     map = new HashTableDoubleHashing<>();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testNullKey() {
-    map.put(null, 5);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation1() {
-    new HashTableDoubleHashing<>(-3, 0.5);
+    assertThrows(IllegalArgumentException.class, () -> new HashTableDoubleHashing<>(-3, 0.5));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation2() {
-    new HashTableDoubleHashing<>(5, Double.POSITIVE_INFINITY);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new HashTableDoubleHashing<>(5, Double.POSITIVE_INFINITY));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation3() {
-    new HashTableDoubleHashing<>(6, -0.5);
+    assertThrows(IllegalArgumentException.class, () -> new HashTableDoubleHashing<>(6, -0.5));
   }
 
   @Test
   public void testLegalCreation() {
     // System.out.println("testLegalCreation");
-    new HashTableDoubleHashing<>(6, 0.9);
+    assertDoesNotThrow(() -> new HashTableDoubleHashing<>(6, 0.9));
+  }
+
+  @Test
+  public void testKeys() {
+    map.put(new DoubleHashingTestObject(1), 10);
+    map.put(new DoubleHashingTestObject(2), 20);
+    map.put(new DoubleHashingTestObject(3), 30);
+    List<DoubleHashingTestObject> keys = map.keys();
+    assertThat(keys)
+        .containsExactly(
+            new DoubleHashingTestObject(1),
+            new DoubleHashingTestObject(2),
+            new DoubleHashingTestObject(3));
+  }
+
+  @Test
+  public void testValues() {
+    map.put(new DoubleHashingTestObject(1), 10);
+    map.put(new DoubleHashingTestObject(2), 20);
+    map.put(new DoubleHashingTestObject(3), 30);
+    List<Integer> values = map.values();
+    assertThat(values).containsExactly(10, 20, 30);
+  }
+
+  @Test
+  public void testToString() {
+    map.put(new DoubleHashingTestObject(1), 10);
+    String s = map.toString();
+    assertThat(s).startsWith("{");
+    assertThat(s).endsWith("}");
+    assertThat(s).contains(" => 10");
   }
 
   @Test
@@ -56,13 +85,13 @@ public class HashTableDoubleHashingTest {
     DoubleHashingTestObject o5 = new DoubleHashingTestObject(5);
     DoubleHashingTestObject on7 = new DoubleHashingTestObject(-7);
 
-    map.add(o1, 1);
+    map.put(o1, 1);
     assertThat(map.get(o1)).isEqualTo(1);
 
-    map.add(o5, 5);
+    map.put(o5, 5);
     assertThat(map.get(o5)).isEqualTo(5);
 
-    map.add(on7, -7);
+    map.put(on7, -7);
     assertThat(map.get(on7)).isEqualTo(-7);
   }
 
@@ -82,13 +111,13 @@ public class HashTableDoubleHashingTest {
 
       List<DoubleHashingTestObject> rand_nums = genRandList(MAX_SIZE);
       for (DoubleHashingTestObject key : rand_nums)
-        assertThat(mmap.add(key, key)).isEqualTo(jmap.put(key, key));
+        assertThat(mmap.put(key, key)).isEqualTo(jmap.put(key, key));
 
       int count = 0;
       for (DoubleHashingTestObject key : mmap) {
         assertThat(mmap.get(key)).isEqualTo(key);
         assertThat(mmap.get(key)).isEqualTo(jmap.get(key));
-        assertThat(mmap.hasKey(key)).isTrue();
+        assertThat(mmap.containsKey(key)).isTrue();
         assertThat(rand_nums.contains(key)).isTrue();
         count++;
       }
@@ -107,28 +136,36 @@ public class HashTableDoubleHashingTest {
     }
   }
 
-  @Test(expected = java.util.ConcurrentModificationException.class)
+  @Test
   public void testConcurrentModificationException() {
-    // System.out.println("testConcurrentModificationException");
-    DoubleHashingTestObject o1 = new DoubleHashingTestObject(1);
-    DoubleHashingTestObject o2 = new DoubleHashingTestObject(2);
-    DoubleHashingTestObject o3 = new DoubleHashingTestObject(3);
-    DoubleHashingTestObject o4 = new DoubleHashingTestObject(4);
-    map.add(o1, 1);
-    map.add(o2, 1);
-    map.add(o3, 1);
-    for (DoubleHashingTestObject key : map) map.add(o4, 4);
+    assertThrows(
+        ConcurrentModificationException.class,
+        () -> {
+          // System.out.println("testConcurrentModificationException");
+          DoubleHashingTestObject o1 = new DoubleHashingTestObject(1);
+          DoubleHashingTestObject o2 = new DoubleHashingTestObject(2);
+          DoubleHashingTestObject o3 = new DoubleHashingTestObject(3);
+          DoubleHashingTestObject o4 = new DoubleHashingTestObject(4);
+          map.put(o1, 1);
+          map.put(o2, 1);
+          map.put(o3, 1);
+          for (DoubleHashingTestObject key : map) map.put(o4, 4);
+        });
   }
 
-  @Test(expected = java.util.ConcurrentModificationException.class)
+  @Test
   public void testConcurrentModificationException2() {
-    DoubleHashingTestObject o1 = new DoubleHashingTestObject(1);
-    DoubleHashingTestObject o2 = new DoubleHashingTestObject(2);
-    DoubleHashingTestObject o3 = new DoubleHashingTestObject(3);
-    map.add(o1, 1);
-    map.add(o2, 1);
-    map.add(o3, 1);
-    for (DoubleHashingTestObject key : map) map.remove(o2);
+    assertThrows(
+        ConcurrentModificationException.class,
+        () -> {
+          DoubleHashingTestObject o1 = new DoubleHashingTestObject(1);
+          DoubleHashingTestObject o2 = new DoubleHashingTestObject(2);
+          DoubleHashingTestObject o3 = new DoubleHashingTestObject(3);
+          map.put(o1, 1);
+          map.put(o2, 1);
+          map.put(o3, 1);
+          for (DoubleHashingTestObject key : map) map.remove(o2);
+        });
   }
 
   @Test

@@ -1,7 +1,30 @@
-/** WIP */
+/**
+ * Boruvka's Minimum Spanning Tree Algorithm — Edge List
+ *
+ * <p>Finds the MST of a weighted undirected graph by repeatedly selecting the
+ * cheapest outgoing edge from each connected component and merging components.
+ *
+ * <p>Algorithm:
+ * <ol>
+ *   <li>Start with each node as its own component (using Union-Find).</li>
+ *   <li>For each component, find the minimum-weight edge crossing to another component.</li>
+ *   <li>Add all such cheapest edges to the MST and merge the components.</li>
+ *   <li>Repeat until only one component remains, or no more merges are possible.</li>
+ * </ol>
+ *
+ * <p>If the graph is disconnected, no MST exists and the solver returns null.
+ *
+ * <p>Time:  O(E log V)
+ * <p>Space: O(V + E)
+ *
+ * @author William Fiset, william.alexandre.fiset@gmail.com
+ */
 package com.williamfiset.algorithms.graphtheory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalLong;
 
 public class Boruvkas {
 
@@ -13,209 +36,127 @@ public class Boruvkas {
       this.v = v;
       this.cost = cost;
     }
-
-    public String toString() {
-      return String.format("%d %d, cost: %d", u, v, cost);
-    }
-    // @Override
-    public int compareTo(Edge other) {
-      int cmp = cost - other.cost;
-      // Break ties by picking lexicographically smallest edge pair.
-      if (cmp == 0) {
-        cmp = u - other.u;
-        if (cmp == 0) return v - other.v;
-        return cmp;
-      }
-      return cmp;
-    }
   }
 
-  // Inputs
-  private final int n, m; // Num nodes, num edges
-  private final Edge[] graph; // Edge list
-
-  // Internal
+  private final int n;
+  private final Edge[] graph;
   private boolean solved;
   private boolean mstExists;
-
-  // Outputs
   private long minCostSum;
   private List<Edge> mst;
 
-  public Boruvkas(int n, int m, Edge[] graph) {
-    if (graph == null) throw new IllegalArgumentException();
+  public Boruvkas(int n, Edge[] graph) {
+    if (graph == null) {
+      throw new IllegalArgumentException();
+    }
     this.graph = graph;
     this.n = n;
-    this.m = m;
+    this.mst = new ArrayList<>();
   }
 
-  // Returns the edges used in finding the minimum spanning tree, or returns
-  // null if no MST exists.
-  public List<Edge> getMst() {
+  /**
+   * Returns the edges in the MST, or empty if the graph is disconnected.
+   */
+  public Optional<List<Edge>> getMst() {
     solve();
-    return mstExists ? mst : null;
+    return mstExists ? Optional.of(mst) : Optional.empty();
   }
 
-  public Long getMstCost() {
+  /**
+   * Returns the total cost of the MST, or empty if the graph is disconnected.
+   */
+  public OptionalLong getMstCost() {
     solve();
-    return mstExists ? minCostSum : null;
+    return mstExists ? OptionalLong.of(minCostSum) : OptionalLong.empty();
   }
 
-  // Given a graph represented as an edge list this method finds
-  // the Minimum Spanning Tree (MST) cost if there exists
-  // a MST, otherwise it returns null.
   private void solve() {
-    if (solved) return;
-
-    mst = new ArrayList<>();
+    if (solved) {
+      return;
+    }
 
     UnionFind uf = new UnionFind(n);
 
-    int[] cheapest = new int[n];
-    Arrays.fill(cheapest, -1);
+    while (uf.components > 1) {
+      Edge[] cheapest = new Edge[n];
 
-    // Repeat at most log(n) times or until we have a complete spanning tree.
-    // for(int t = 1; t < N && index < n - 1; t = t + t) {
-    // for(long t = 1; t <= n && mst.size() != n-1; t = t << 1) {
-    for (; mst.size() != n - 1; ) {
-
-      // TODO: Remove
-      Arrays.fill(cheapest, -1);
-      boolean stop = true;
-
-      for (int i = 0; i < graph.length; i++) {
-        Edge e = graph[i];
-        if (e.u == e.v) continue;
-        int uc = uf.id[e.u], vc = uf.id[e.v];
-        if (uc == vc) continue;
-        // if (cheapest[vc] == -1 || e.compareTo(graph[cheapest[vc]]) < 0) { stop = false;
-        // cheapest[vc] = i; }
-        // if (cheapest[uc] == -1 || e.compareTo(graph[cheapest[uc]]) < 0) { stop = false;
-        // cheapest[uc] = i; }
-        if (cheapest[vc] == -1 || e.cost < graph[cheapest[vc]].cost) {
-          stop = false;
-          cheapest[vc] = i;
+      // For each edge, track the cheapest crossing edge for each component.
+      for (Edge e : graph) {
+        int root1 = uf.find(e.u);
+        int root2 = uf.find(e.v);
+        if (root1 == root2) {
+          continue;
         }
-        if (cheapest[uc] == -1 || e.cost < graph[cheapest[uc]].cost) {
-          stop = false;
-          cheapest[uc] = i;
+        if (cheapest[root1] == null || e.cost < cheapest[root1].cost) {
+          cheapest[root1] = e;
+        }
+        if (cheapest[root2] == null || e.cost < cheapest[root2].cost) {
+          cheapest[root2] = e;
         }
       }
 
-      if (stop) break;
+      // Merge components using their cheapest crossing edges.
+      int prevComponents = uf.components;
+      for (Edge e : cheapest) {
+        if (e != null && uf.find(e.u) != uf.find(e.v)) {
+          uf.union(e.u, e.v);
+          mst.add(e);
+          minCostSum += e.cost;
+        }
+      }
 
-      for (int i = 0; i < n; i++) {
-        if (cheapest[i] == -1) continue;
-        Edge e = graph[cheapest[i]];
-        // cheapest[i] = -1;
-        if (uf.connected(e.u, e.v)) continue;
-
-        mst.add(e);
-        minCostSum += e.cost;
-        uf.union(e.u, e.v);
-
-        // TODO(williamfiset): Optimization is to remove e from graph.
+      if (uf.components == prevComponents) {
+        break;
       }
     }
 
-    // if ( (index==n-1) != (uf.size(0) == n) ) throw new NullPointerException();
-
-    mstExists = (mst.size() == n - 1); // (uf.size(0) == n);
+    mstExists = (mst.size() == n - 1);
     solved = true;
-
-    // if (!check()) throw new IllegalStateException();
   }
 
-  private boolean check() {
+  // ==================== Main ====================
 
-    if (!mstExists) return true;
-
-    // check that it is acyclic
-    UnionFind uf = new UnionFind(n);
-    for (Edge e : mst) {
-      int u = e.u, v = e.v;
-      if (uf.connected(u, v)) {
-        System.err.println("Not a forest");
-        return false;
-      }
-      uf.union(u, v);
-    }
-
-    // check that it is a spanning forest
-    for (Edge e : mst) {
-      int u = e.u, v = e.v;
-      if (!uf.connected(u, v)) {
-        System.err.println("Not a spanning forest");
-        return false;
-      }
-    }
-
-    // check that it is a minimal spanning forest (cut optimality conditions)
-    for (Edge e : mst) {
-
-      // all edges in MST except e
-      uf = new UnionFind(n);
-      for (Edge f : mst) {
-        int x = f.u, y = f.v;
-        if (f != e) uf.union(x, y);
-      }
-
-      // check that e is min weight edge in crossing cut
-      for (Edge f : graph) {
-        int x = f.u, y = f.v;
-        if (!uf.connected(x, y)) {
-          if (f.cost < e.cost) {
-            System.err.println("Edge " + f + " violates cut optimality conditions");
-            return false;
-          }
-        }
-      }
-    }
-    return true;
-  }
-
+  //
+  //                  1                 7                 2
+  //      0 ---------------  1 ---------------  2 ---------------  3
+  //      |                  |                  |                  |
+  //      |                  |                  |                  |
+  //    4 |                3 |                5 |                6 |
+  //      |                  |                  |                  |
+  //      |                  |                  |                  |
+  //      4 ---------------  5 ---------------  6 ---------------  7
+  //                  8                 2                 9
+  //
+  //  MST cost: 23
+  //
   public static void main(String[] args) {
+    Edge[] g = {
+      new Edge(0, 1, 1),
+      new Edge(1, 2, 7),
+      new Edge(2, 3, 2),
+      new Edge(0, 4, 4),
+      new Edge(1, 5, 3),
+      new Edge(2, 6, 5),
+      new Edge(3, 7, 6),
+      new Edge(4, 5, 8),
+      new Edge(5, 6, 2),
+      new Edge(6, 7, 9),
+    };
 
-    int n = 10, m = 18, i = 0;
-    Edge[] g = new Edge[m];
+    Boruvkas solver = new Boruvkas(8, g);
 
-    // Edges are treated as undirected
-    g[i++] = new Edge(0, 1, 5);
-    g[i++] = new Edge(0, 3, 4);
-    g[i++] = new Edge(0, 4, 1);
-    g[i++] = new Edge(1, 2, 4);
-    g[i++] = new Edge(1, 3, 2);
-    g[i++] = new Edge(2, 7, 4);
-    g[i++] = new Edge(2, 8, 1);
-    g[i++] = new Edge(2, 9, 2);
-    g[i++] = new Edge(3, 6, 11);
-    g[i++] = new Edge(3, 7, 2);
-    g[i++] = new Edge(4, 3, 2);
-    g[i++] = new Edge(4, 5, 1);
-    g[i++] = new Edge(5, 3, 5);
-    g[i++] = new Edge(5, 6, 7);
-    g[i++] = new Edge(6, 7, 1);
-    g[i++] = new Edge(6, 8, 4);
-    g[i++] = new Edge(7, 8, 6);
-    g[i++] = new Edge(9, 8, 0);
-
-    Boruvkas solver = new Boruvkas(n, m, g);
-
-    Long ans = solver.getMstCost();
-    if (ans != null) {
-      System.out.println("MST cost: " + ans);
-      for (Edge e : solver.getMst()) {
-        System.out.println(e);
+    OptionalLong cost = solver.getMstCost();
+    if (cost.isPresent()) {
+      System.out.println("MST cost: " + cost.getAsLong()); // 23
+      for (Edge e : solver.getMst().get()) {
+        System.out.printf("Edge %d-%d, cost: %d%n", e.u, e.v, e.cost);
       }
     } else {
       System.out.println("No MST exists");
     }
-
-    // System.out.println(solver.solve(g, n));
-
   }
 
-  // Union find data structure
+  // Union-Find with path compression and union by size.
   private static class UnionFind {
     int components;
     int[] id, sz;
@@ -231,27 +172,17 @@ public class Boruvkas {
     }
 
     public int find(int p) {
-      int root = p;
-      while (root != id[root]) root = id[root];
-      while (p != root) { // Do path compression
-        int next = id[p];
-        id[p] = root;
-        p = next;
+      if (id[p] == p) {
+        return p;
       }
-      return root;
-    }
-
-    public boolean connected(int p, int q) {
-      return find(p) == find(q);
-    }
-
-    public int size(int p) {
-      return sz[find(p)];
+      return id[p] = find(id[p]);
     }
 
     public void union(int p, int q) {
       int root1 = find(p), root2 = find(q);
-      if (root1 == root2) return;
+      if (root1 == root2) {
+        return;
+      }
       if (sz[root1] < sz[root2]) {
         sz[root2] += sz[root1];
         id[root1] = root2;

@@ -1,9 +1,10 @@
 package com.williamfiset.algorithms.datastructures.hashtable;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 public class HashTableLinearProbingTest {
 
@@ -24,8 +25,12 @@ public class HashTableLinearProbingTest {
 
     @Override
     public boolean equals(Object o) {
-      HashObject ho = (HashObject) o;
-      return hashCode() == ho.hashCode() && data == ho.data;
+      if (this == o) return true;
+      else if (o instanceof HashObject) {
+        HashObject ho = (HashObject) o;
+        return hashCode() == ho.hashCode() && data == ho.data;
+      }
+      return false;
     }
   }
 
@@ -40,47 +45,99 @@ public class HashTableLinearProbingTest {
 
   HashTableLinearProbing<Integer, Integer> map;
 
-  @Before
+  @BeforeEach
   public void setup() {
     map = new HashTableLinearProbing<>();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullKey() {
-    map.put(null, 5);
+    assertThrows(IllegalArgumentException.class, () -> map.put(null, 5));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation1() {
-    new HashTableLinearProbing<>(-3, 0.5);
+    assertThrows(IllegalArgumentException.class, () -> new HashTableLinearProbing<>(-3, 0.5));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation2() {
-    new HashTableLinearProbing<>(5, Double.POSITIVE_INFINITY);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new HashTableLinearProbing<>(5, Double.POSITIVE_INFINITY));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation3() {
-    new HashTableLinearProbing<>(6, -0.5);
+    assertThrows(IllegalArgumentException.class, () -> new HashTableLinearProbing<>(6, -0.5));
   }
 
   @Test
   public void testLegalCreation() {
-    new HashTableLinearProbing<>(6, 0.9);
+    assertDoesNotThrow(() -> new HashTableLinearProbing<>(6, 0.9));
   }
 
   @Test
-  public void testUpdatingValue() {
+  public void testKeys() {
+    map.put(1, 10);
+    map.put(2, 20);
+    map.put(3, 30);
+    List<Integer> keys = map.keys();
+    assertThat(keys).containsExactly(1, 2, 3);
+  }
 
-    map.add(1, 1);
-    assertThat(map.get(1)).isEqualTo(1);
+  @Test
+  public void testValues() {
+    map.put(1, 10);
+    map.put(2, 20);
+    map.put(3, 30);
+    List<Integer> values = map.values();
+    assertThat(values).containsExactly(10, 20, 30);
+  }
 
-    map.add(1, 5);
-    assertThat(map.get(1)).isEqualTo(5);
+  @Test
+  public void testToString() {
+    map.put(1, 10);
+    map.put(2, 20);
+    String s = map.toString();
+    assertThat(s).contains("1 => 10");
+    assertThat(s).contains("2 => 20");
+    assertThat(s).startsWith("{");
+    assertThat(s).endsWith("}");
+  }
 
-    map.add(1, -7);
-    assertThat(map.get(1)).isEqualTo(-7);
+  @Test
+  public void testLazyRelocation() {
+    // Probing sequence for keys with same hash
+    // We can use HashObject to force collisions
+    HashTableLinearProbing<HashObject, Integer> collisionMap = new HashTableLinearProbing<>(10);
+    HashObject o1 = new HashObject(5, 1);
+    HashObject o2 = new HashObject(5, 2);
+    HashObject o3 = new HashObject(5, 3);
+
+    collisionMap.put(o1, 100);
+    collisionMap.put(o2, 200);
+    collisionMap.put(o3, 300);
+
+    // Remove o2, it leaves a TOMBSTONE
+    collisionMap.remove(o2);
+    assertThat(collisionMap.containsKey(o3)).isTrue(); // Should trigger lazy relocation
+    assertThat(collisionMap.get(o3)).isEqualTo(300);
+  }
+
+  @Test
+  public void testGetNullKey() {
+    assertThrows(IllegalArgumentException.class, () -> map.get(null));
+  }
+
+  @Test
+  public void testContainsKeyNullKey() {
+    assertThrows(IllegalArgumentException.class, () -> map.containsKey(null));
+  }
+
+  @Test
+  public void testRemoveNullKey() {
+    assertThrows(IllegalArgumentException.class, () -> map.remove(null));
   }
 
   @Test
@@ -97,13 +154,13 @@ public class HashTableLinearProbingTest {
       map = new HashTableLinearProbing<>();
 
       List<Integer> rand_nums = genRandList(MAX_SIZE);
-      for (Integer key : rand_nums) assertThat(map.add(key, key)).isEqualTo(map2.put(key, key));
+      for (Integer key : rand_nums) assertThat(map.put(key, key)).isEqualTo(map2.put(key, key));
 
       int count = 0;
       for (Integer key : map) {
         assertThat(map.get(key)).isEqualTo(key);
         assertThat(map.get(key)).isEqualTo(map2.get(key));
-        assertThat(map.hasKey(key)).isTrue();
+        assertThat(map.containsKey(key)).isTrue();
         assertThat(rand_nums.contains(key)).isTrue();
         count++;
       }
@@ -120,20 +177,28 @@ public class HashTableLinearProbingTest {
     }
   }
 
-  @Test(expected = java.util.ConcurrentModificationException.class)
+  @Test
   public void testConcurrentModificationException() {
-    map.add(1, 1);
-    map.add(2, 1);
-    map.add(3, 1);
-    for (Integer key : map) map.add(4, 4);
+    assertThrows(
+        ConcurrentModificationException.class,
+        () -> {
+          map.put(1, 1);
+          map.put(2, 1);
+          map.put(3, 1);
+          for (Integer key : map) map.put(4, 4);
+        });
   }
 
-  @Test(expected = java.util.ConcurrentModificationException.class)
+  @Test
   public void testConcurrentModificationException2() {
-    map.add(1, 1);
-    map.add(2, 1);
-    map.add(3, 1);
-    for (Integer key : map) map.remove(2);
+    assertThrows(
+        ConcurrentModificationException.class,
+        () -> {
+          map.put(1, 1);
+          map.put(2, 1);
+          map.put(3, 1);
+          for (Integer key : map) map.remove(2);
+        });
   }
 
   @Test
@@ -199,10 +264,10 @@ public class HashTableLinearProbingTest {
     HashObject o3 = new HashObject(88, 3);
     HashObject o4 = new HashObject(88, 4);
 
-    map.add(o1, 111);
-    map.add(o2, 111);
-    map.add(o3, 111);
-    map.add(o4, 111);
+    map.put(o1, 111);
+    map.put(o2, 111);
+    map.put(o3, 111);
+    map.put(o4, 111);
 
     map.remove(o2);
     map.remove(o3);

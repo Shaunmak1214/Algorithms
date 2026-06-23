@@ -1,9 +1,10 @@
 package com.williamfiset.algorithms.datastructures.hashtable;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 public class HashTableQuadraticProbingTest {
 
@@ -24,8 +25,11 @@ public class HashTableQuadraticProbingTest {
 
     @Override
     public boolean equals(Object o) {
-      HashObject ho = (HashObject) o;
-      return hashCode() == ho.hashCode() && data == ho.data;
+      if (this == o) return true;
+      else if (o instanceof HashObject) {
+        HashObject ho = (HashObject) o;
+        return hashCode() == ho.hashCode() && data == ho.data;
+      } else return false;
     }
   }
 
@@ -40,46 +44,75 @@ public class HashTableQuadraticProbingTest {
 
   HashTableQuadraticProbing<Integer, Integer> map;
 
-  @Before
+  @BeforeEach
   public void setup() {
     map = new HashTableQuadraticProbing<>();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullKey() {
-    map.put(null, 5);
+    assertThrows(IllegalArgumentException.class, () -> map.put(null, 5));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation1() {
-    new HashTableQuadraticProbing<>(-3, 0.5);
+    assertThrows(IllegalArgumentException.class, () -> new HashTableQuadraticProbing<>(-3, 0.5));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation2() {
-    new HashTableQuadraticProbing<>(5, Double.POSITIVE_INFINITY);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new HashTableQuadraticProbing<>(5, Double.POSITIVE_INFINITY));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testIllegalCreation3() {
-    new HashTableQuadraticProbing<>(6, -0.5);
+    assertThrows(IllegalArgumentException.class, () -> new HashTableQuadraticProbing<>(6, -0.5));
   }
 
   @Test
   public void testLegalCreation() {
-    new HashTableQuadraticProbing<>(6, 0.9);
+    assertDoesNotThrow(() -> new HashTableQuadraticProbing<>(6, 0.9));
+  }
+
+  @Test
+  public void testKeys() {
+    map.put(1, 10);
+    map.put(2, 20);
+    map.put(3, 30);
+    List<Integer> keys = map.keys();
+    assertThat(keys).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  public void testValues() {
+    map.put(1, 10);
+    map.put(2, 20);
+    map.put(3, 30);
+    List<Integer> values = map.values();
+    assertThat(values).containsExactly(10, 20, 30);
+  }
+
+  @Test
+  public void testToString() {
+    map.put(1, 10);
+    String s = map.toString();
+    assertThat(s).startsWith("{");
+    assertThat(s).endsWith("}");
+    assertThat(s).contains("1 => 10");
   }
 
   @Test
   public void testUpdatingValue() {
 
-    map.add(1, 1);
+    map.put(1, 1);
     assertThat(map.get(1)).isEqualTo(1);
 
-    map.add(1, 5);
+    map.put(1, 5);
     assertThat(map.get(1)).isEqualTo(5);
 
-    map.add(1, -7);
+    map.put(1, -7);
     assertThat(map.get(1)).isEqualTo(-7);
   }
 
@@ -99,7 +132,7 @@ public class HashTableQuadraticProbingTest {
       ht = new HashTableQuadraticProbing<>(sz);
       for (int i = 0; i < loops; i++) {
         assertCapacityIsPowerOfTwo(ht);
-        ht.add(i, i);
+        ht.put(i, i);
       }
     }
   }
@@ -118,13 +151,13 @@ public class HashTableQuadraticProbingTest {
       map = new HashTableQuadraticProbing<>();
 
       List<Integer> rand_nums = genRandList(MAX_SIZE);
-      for (Integer key : rand_nums) assertThat(map.add(key, key)).isEqualTo(map2.put(key, key));
+      for (Integer key : rand_nums) assertThat(map.put(key, key)).isEqualTo(map2.put(key, key));
 
       int count = 0;
       for (Integer key : map) {
         assertThat(map.get(key)).isEqualTo(key);
         assertThat(map.get(key)).isEqualTo(map2.get(key));
-        assertThat(map.hasKey(key)).isTrue();
+        assertThat(map.containsKey(key)).isTrue();
         assertThat(rand_nums.contains(key)).isTrue();
         count++;
       }
@@ -141,20 +174,28 @@ public class HashTableQuadraticProbingTest {
     }
   }
 
-  @Test(expected = java.util.ConcurrentModificationException.class)
+  @Test
   public void testConcurrentModificationException() {
-    map.add(1, 1);
-    map.add(2, 1);
-    map.add(3, 1);
-    for (Integer key : map) map.add(4, 4);
+    assertThrows(
+        ConcurrentModificationException.class,
+        () -> {
+          map.put(1, 1);
+          map.put(2, 1);
+          map.put(3, 1);
+          for (Integer key : map) map.put(4, 4);
+        });
   }
 
-  @Test(expected = java.util.ConcurrentModificationException.class)
+  @Test
   public void testConcurrentModificationException2() {
-    map.add(1, 1);
-    map.add(2, 1);
-    map.add(3, 1);
-    for (Integer key : map) map.remove(2);
+    assertThrows(
+        ConcurrentModificationException.class,
+        () -> {
+          map.put(1, 1);
+          map.put(2, 1);
+          map.put(3, 1);
+          for (Integer key : map) map.remove(2);
+        });
   }
 
   @Test
@@ -220,10 +261,10 @@ public class HashTableQuadraticProbingTest {
     HashObject o3 = new HashObject(88, 3);
     HashObject o4 = new HashObject(88, 4);
 
-    map.add(o1, 111);
-    map.add(o2, 111);
-    map.add(o3, 111);
-    map.add(o4, 111);
+    map.put(o1, 111);
+    map.put(o2, 111);
+    map.put(o3, 111);
+    map.put(o4, 111);
 
     map.remove(o2);
     map.remove(o3);

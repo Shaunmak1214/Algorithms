@@ -1,16 +1,30 @@
 *.class
 
-.gradle
-/build/
+# Gradle build outputs
+build/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+# Bazel build outputs
+bazel-*
+/bazel-bin
+/bazel-out
+/bazel-testlogs
+/bazel-algorithms
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+# Bazel convenience symlinks
+/bazel-*
 
-# Cache of project
-.gradletasknamecache
+# Bazel internal directories
+.bazel
+.bazelrc.user
+
+# Lock files (you may want to commit these for reproducibility)
+# Uncomment if you want to ignore them:
+MODULE.bazel.lock
+rules_jvm_external++maven+maven_install.json
+
+# Bazel compilation database
+compile_commands.json
+.compilation_database
 
 dependencies
 bin/
@@ -23,3 +37,6 @@ bin/
 # Mac files
 .DS_Store
 .idea/
+
+# Kotlin folder?
+*/META-INF/*

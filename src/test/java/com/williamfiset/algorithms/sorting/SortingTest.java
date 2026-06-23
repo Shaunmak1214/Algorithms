@@ -5,7 +5,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.williamfiset.algorithms.utils.TestUtils;
 import java.util.Arrays;
 import java.util.EnumSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 // Test all sorting algorithms under various constraints.
 //
@@ -25,7 +25,9 @@ public class SortingTest {
     QUICK_SORT(new QuickSort()),
     QUICK_SORT3(new QuickSort3()),
     RADIX_SORT(new RadixSort()),
-    SELECTION_SORT(new SelectionSort());
+    SELECTION_SORT(new SelectionSort()),
+    SHELL_SORT(new ShellSort()),
+    TIM_SORT(new TimSort());
 
     private InplaceSort algorithm;
 
@@ -49,7 +51,9 @@ public class SortingTest {
           SortingAlgorithm.QUICK_SORT,
           SortingAlgorithm.QUICK_SORT3,
           SortingAlgorithm.RADIX_SORT,
-          SortingAlgorithm.SELECTION_SORT);
+          SortingAlgorithm.SELECTION_SORT,
+          SortingAlgorithm.SHELL_SORT,
+          SortingAlgorithm.TIM_SORT);
 
   @Test
   public void verifySortingAlgorithms_smallPositiveIntegersOnly() {

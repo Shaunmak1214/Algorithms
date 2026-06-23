@@ -1,82 +1,72 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Java CI with Gradle](https://github.com/williamfiset/Algorithms/workflows/Java%20CI%20with%20Gradle/badge.svg)
+[![Bazel Tests](https://github.com/williamfiset/Algorithms/actions/workflows/main.yml/badge.svg)](https://github.com/williamfiset/Algorithms/actions/workflows/main.yml)
 ![README Checker](https://github.com/williamfiset/Algorithms/workflows/README%20URL%20Checker/badge.svg)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=JUP2HZ6JUPB5C)
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa.svg)](https://github.com/sponsors/williamfiset)
 
 # Algorithms & data structures project
 
 Algorithms and data structures are fundamental to efficient code and good software design. Creating and designing excellent algorithms is required for being an exemplary programmer. This repository's goal is to demonstrate how to correctly implement common data structures and algorithms in the simplest and most elegant ways.
 
-# Contributing
-
-This repository is contribution friendly :smiley:. If you'd like to add or improve an algorithm, your contribution is welcome! Please be sure to checkout the [Wiki](https://github.com/williamfiset/Algorithms/wiki) for instructions.
-
-### Other programming languages?
-
-This repository provides algorithm implementations in Java, however there are other forks that provide implementations in other languages, most notably:
-
-* **C++/Python**: https://github.com/akzare/Algorithms
-* **Rust**: https://github.com/TianyiShi2001/Algorithms
+🎬 Many of the algorithms and data structures in this repo have companion video explanations on the [William Fiset YouTube channel](https://www.youtube.com/@WilliamFiset-videos) — so if the code alone doesn't click, grab some popcorn and watch the videos!
 
 # Running an algorithm implementation
 
-To compile and run any of the algorithms here, you need at least JDK version 8. Gradle can make things more convenient for you, but it is not required.
+To compile and run any of the algorithms here, you need at least JDK version 8 and [Bazel](https://bazel.build/)
 
-## Running with Gradle (recommended)
+## Running with Bazel (recommended)
 
-This project supports the [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html). The Gradle wrapper automatically downloads Gradle at the first time it runs, so expect a delay when running the first command below.
-
-If you are on Windows, use `gradlew.bat` instead of `./gradlew` below.
+This project uses [Bazel](https://bazel.build/) as its build system. Install Bazel by following the [official installation guide](https://bazel.build/install).
 
 Run a single algorithm like this:
 
-```
-./gradlew run -Palgorithm=<algorithm-subpackage>.<algorithm-class>
-```
-
-Alternatively, you can run a single algorithm specifying the full class name
-
-```
-./gradlew run -Pmain=<algorithm-fully-qualified-class-name>
-
+```bash
+bazel run //src/main/java/com/williamfiset/algorithms/<subpackage>:<ClassName>
 ```
 
 For instance:
 
-```
-./gradlew run -Palgorithm=search.BinarySearch
+```bash
+bazel run //src/main/java/com/williamfiset/algorithms/search:BinarySearch
 ```
 
-or
+Run all tests:
 
+```bash
+bazel test //src/test/...
 ```
-./gradlew run -Pmain=com.williamfiset.algorithms.search.BinarySearch
+
+Run tests for a specific package:
+
+```bash
+bazel test //src/test/java/com/williamfiset/algorithms/sorting:all
 ```
 
 ## Compiling and running with only a JDK
 
+If you don't want to use Bazel, you can compile and run with just the JDK:
+
 ### Create a classes folder
 
-```
+```bash
 cd Algorithms
 mkdir classes
 ```
 
 ### Compile the algorithm
 
-```
-javac -sourcepath src/main/java -d classes src/main/java/ <relative-path-to-java-source-file>
+```bash
+javac -sourcepath src/main/java -d classes src/main/java/<relative-path-to-java-source-file>
 ```
 
 ### Run the algorithm
 
-```
+```bash
 java -cp classes <class-fully-qualified-name>
 ```
 
 ### Example
 
-```
+```bash
 $ javac -d classes -sourcepath src/main/java src/main/java/com/williamfiset/algorithms/search/BinarySearch.java
 $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 ```
@@ -90,7 +80,6 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 - [Splay Tree](src/main/java/com/williamfiset/algorithms/datastructures/binarysearchtree/SplayTree.java)
 - [:movie_camera:](https://www.youtube.com/watch?v=PEnFFiQe1pM) [Dynamic Array](src/main/java/com/williamfiset/algorithms/datastructures/dynamicarray)
   - [Dynamic array (integer only, fast)](src/main/java/com/williamfiset/algorithms/datastructures/dynamicarray/IntArray.java)
-  - [Dynamic array (generic)](src/main/java/com/williamfiset/algorithms/datastructures/dynamicarray/DynamicArray.java)
 - [:movie_camera:](https://www.youtube.com/watch?v=RgITNht_f4Q) [Fenwick Tree](src/main/java/com/williamfiset/algorithms/datastructures/fenwicktree)
   - [Fenwick Tree (range query, point updates)](src/main/java/com/williamfiset/algorithms/datastructures/fenwicktree/FenwickTreeRangeQueryPointUpdate.java)
   - [Fenwick Tree (range update, point query)](src/main/java/com/williamfiset/algorithms/datastructures/fenwicktree/FenwickTreeRangeUpdatePointQuery.java)
@@ -151,13 +140,12 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 ### Tiling problems
 
 - [:movie_camera:](https://youtu.be/yn2jnmlepY8) [Tiling Dominoes](https://github.com/williamfiset/Algorithms/blob/master/src/main/java/com/williamfiset/algorithms/dp/examples/tilingdominoes/TilingDominoes.java)
-- [:movie_camera:](https://www.youtube.com/watch?v=CecjOo4Zo-g) [Tiling Dominoes and Trominoes](src/main/java/com/williamfiset/algorithms/dp/examples/domino-and-tromino-tiling)
+- [:movie_camera:](https://www.youtube.com/watch?v=CecjOo4Zo-g) [Tiling Dominoes and Trominoes](src/main/java/com/williamfiset/algorithms/dp/examples/dominoandtrominotiling)
 - [:movie_camera:](https://youtu.be/pPgBZqY_Xh0) [Mountain Scenes](https://github.com/williamfiset/Algorithms/blob/master/src/main/java/com/williamfiset/algorithms/dp/examples/scenes/Scenes.java)
 
 # Geometry
 
 - [Angle between 2D vectors](src/main/java/com/williamfiset/algorithms/geometry/AngleBetweenVectors2D.java) **- O(1)**
-- [Angle between 3D vectors](src/main/java/com/williamfiset/algorithms/geometry/AngleBetweenVectors3D.java) **- O(1)**
 - [Circle-circle intersection point(s)](src/main/java/com/williamfiset/algorithms/geometry/CircleCircleIntersectionPoints.js) **- O(1)**
 - [Circle-line intersection point(s)](src/main/java/com/williamfiset/algorithms/geometry/LineCircleIntersection.js) **- O(1)**
 - [Circle-line segment intersection point(s)](src/main/java/com/williamfiset/algorithms/geometry/LineSegmentCircleIntersection.js) **- O(1)**
@@ -167,27 +155,34 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 - [Convex hull (Graham Scan algorithm)](src/main/java/com/williamfiset/algorithms/geometry/ConvexHullGrahamScan.java) **- O(nlog(n))**
 - [Convex hull (Monotone chain algorithm)](src/main/java/com/williamfiset/algorithms/geometry/ConvexHullMonotoneChainsAlgorithm.java) **- O(nlog(n))**
 - [Convex polygon area](src/main/java/com/williamfiset/algorithms/geometry/ConvexPolygonArea.java) **- O(n)**
-- [Convex polygon cut](src/main/java/com/williamfiset/algorithms/geometry/ConvexPolygonCutWithLineSegment.java) **- O(n)**
 - [Convex polygon contains points](src/main/java/com/williamfiset/algorithms/geometry/ConvexPolygonContainsPoint.java) **- O(log(n))**
+- [Triangle area algorithms](src/main/java/com/williamfiset/algorithms/geometry/TriangleArea.java) **- O(1)**
+- [Line segment-circle intersection point(s)](src/main/java/com/williamfiset/algorithms/geometry/LineSegmentCircleIntersection.js) **- O(1)**
+- [Line segment-line segment intersection](src/main/java/com/williamfiset/algorithms/geometry/LineSegmentLineSegmentIntersection.java) **- O(1)**
+
+<details>
+<summary>More geometry algorithms</summary>
+
+- [Angle between 3D vectors](src/main/java/com/williamfiset/algorithms/geometry/AngleBetweenVectors3D.java) **- O(1)**
+- [Convex polygon cut](src/main/java/com/williamfiset/algorithms/geometry/ConvexPolygonCutWithLineSegment.java) **- O(n)**
 - [Coplanar points test (are four 3D points on the same plane)](src/main/java/com/williamfiset/algorithms/geometry/CoplanarPoints.java) **- O(1)**
 - [Line class (handy infinite line class)](src/main/java/com/williamfiset/algorithms/geometry/Line.java) **- O(1)**
 - [Line-circle intersection point(s)](src/main/java/com/williamfiset/algorithms/geometry/LineCircleIntersection.js) **- O(1)**
-- [Line segment-circle intersection point(s)](src/main/java/com/williamfiset/algorithms/geometry/LineSegmentCircleIntersection.js) **- O(1)**
 - [Line segment to general form (ax + by = c)](src/main/java/com/williamfiset/algorithms/geometry/LineSegmentToGeneralForm.java) **- O(1)**
-- [Line segment-line segment intersection](src/main/java/com/williamfiset/algorithms/geometry/LineSegmentLineSegmentIntersection.java) **- O(1)**
 - [Longitude-Latitude geographic distance](src/main/java/com/williamfiset/algorithms/geometry/LongitudeLatitudeGeographicDistance.java) **- O(1)**
 - [Point is inside triangle check](src/main/java/com/williamfiset/algorithms/geometry/PointInsideTriangle.java) **- O(1)**
 - [Point rotation about point](src/main/java/com/williamfiset/algorithms/geometry/PointRotation.java) **- O(1)**
-- [Triangle area algorithms](src/main/java/com/williamfiset/algorithms/geometry/TriangleArea.java) **- O(1)**
 - [[UNTESTED] Circle-circle intersection area](src/main/java/com/williamfiset/algorithms/geometry/CircleCircleIntersectionArea.java) **- O(1)**
 - [[UNTESTED] Circular segment area](src/main/java/com/williamfiset/algorithms/geometry/CircularSegmentArea.java) **- O(1)**
+
+</details>
 
 # Graph theory
 
 ### Tree algorithms
 
 - [:movie_camera:](https://www.youtube.com/watch?v=2FFq2_je7Lg) [Rooting an undirected tree](src/main/java/com/williamfiset/algorithms/graphtheory/treealgorithms/RootingTree.java) **- O(V+E)**
-- [:movie_camera:](https://www.youtube.com/watch?v=OCKvEMF0Xac) [Identifying isomorphic trees](src/main/java/com/williamfiset/algorithms/graphtheory/treealgorithms/TreeIsomorphism.java) **- O(?)**
+- [:movie_camera:](https://www.youtube.com/watch?v=OCKvEMF0Xac) [Identifying isomorphic trees](src/main/java/com/williamfiset/algorithms/graphtheory/treealgorithms/TreeIsomorphism.java) **- O(V*log(V))**
 - [:movie_camera:](https://www.youtube.com/watch?v=nzF_9bjDzdc) [Tree center(s)](src/main/java/com/williamfiset/algorithms/graphtheory/treealgorithms/TreeCenter.java) **- O(V+E)**
 - [Tree diameter](src/main/java/com/williamfiset/algorithms/graphtheory/treealgorithms/TreeDiameter.java) **- O(V+E)**
 - [:movie_camera:](https://www.youtube.com/watch?v=sD1IoalFomA) [Lowest Common Ancestor (LCA, Euler tour)](src/main/java/com/williamfiset/algorithms/graphtheory/treealgorithms/LowestCommonAncestorEulerTour.java) **- O(1) queries, O(nlogn) preprocessing**
@@ -209,32 +204,24 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 - [Articulation points/cut vertices (adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/ArticulationPointsAdjacencyList.java) **- O(V+E)**
 - [Bellman-Ford (edge list, negative cycles, fast & optimized)](src/main/java/com/williamfiset/algorithms/graphtheory/BellmanFordEdgeList.java) **- O(VE)**
 - [:movie_camera:](https://www.youtube.com/watch?v=lyw4FaxrwHg) [Bellman-Ford (adjacency list, negative cycles)](src/main/java/com/williamfiset/algorithms/graphtheory/BellmanFordAdjacencyList.java) **- O(VE)**
-- [Bellman-Ford (adjacency matrix, negative cycles)](src/main/java/com/williamfiset/algorithms/graphtheory/BellmanFordAdjacencyMatrix.java) **- O(V<sup>3</sup>)**
-- [:movie_camera:](https://www.youtube.com/watch?v=oDqjPvD54Ss) [Breadth first search (adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/BreadthFirstSearchAdjacencyListIterative.java) **- O(V+E)**
-- [Breadth first search (adjacency list, fast queue)](src/main/java/com/williamfiset/algorithms/graphtheory/BreadthFirstSearchAdjacencyListIterativeFastQueue.java) **- O(V+E)**
+- [:movie_camera:](https://www.youtube.com/watch?v=oDqjPvD54Ss) [Breadth first search (adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/BreadthFirstSearchAdjacencyList.java) **- O(V+E)**
 - [Bridges/cut edges (adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/BridgesAdjacencyList.java) **- O(V+E)**
-- [Find connected components (adjacency list, union find)](src/main/java/com/williamfiset/algorithms/graphtheory/ConnectedComponentsAdjacencyList.java) **- O(Elog(E))**
-- [Find connected components (adjacency list, DFS)](src/main/java/com/williamfiset/algorithms/graphtheory/ConnectedComponentsDfsSolverAdjacencyList.java) **- O(V+E)**
-- [Depth first search (adjacency list, iterative)](src/main/java/com/williamfiset/algorithms/graphtheory/DepthFirstSearchAdjacencyListIterative.java) **- O(V+E)**
-- [Depth first search (adjacency list, iterative, fast stack)](src/main/java/com/williamfiset/algorithms/graphtheory/DepthFirstSearchAdjacencyListIterativeFastStack.java) **- O(V+E)**
+- [Boruvkas (adjacency list, min spanning tree algorithm)](src/main/java/com/williamfiset/algorithms/graphtheory/Boruvkas.java) **- O(Elog(V))**
+- [Find connected components (adjacency list, union find)](src/main/java/com/williamfiset/algorithms/graphtheory/ConnectedComponentsUnionFind.java) **- O(V+E)**
+- [Find connected components (adjacency list, DFS)](src/main/java/com/williamfiset/algorithms/graphtheory/ConnectedComponentsDfs.java) **- O(V+E)**
 - [:movie_camera:](https://www.youtube.com/watch?v=7fujbpJ0LB4) [Depth first search (adjacency list, recursive)](src/main/java/com/williamfiset/algorithms/graphtheory/DepthFirstSearchAdjacencyListRecursive.java) **- O(V+E)**
 - [:movie_camera:](https://www.youtube.com/watch?v=pSqmAO-m7Lk) [Dijkstra's shortest path (adjacency list, lazy implementation)](src/main/java/com/williamfiset/algorithms/graphtheory/DijkstrasShortestPathAdjacencyList.java) **- O(Elog(V))**
 - [:movie_camera:](https://www.youtube.com/watch?v=pSqmAO-m7Lk) [Dijkstra's shortest path (adjacency list, eager implementation + D-ary heap)](src/main/java/com/williamfiset/algorithms/graphtheory/DijkstrasShortestPathAdjacencyListWithDHeap.java) **- O(Elog<sub>E/V</sub>(V))**
 - [:movie_camera:](https://www.youtube.com/watch?v=8MpoO2zA2l4) [Eulerian Path (directed edges)](src/main/java/com/williamfiset/algorithms/graphtheory/EulerianPathDirectedEdgesAdjacencyList.java) **- O(E+V)**
 - [:movie_camera:](https://www.youtube.com/watch?v=4NQ3HnhyNfQ) [Floyd Warshall algorithm (adjacency matrix, negative cycle check)](src/main/java/com/williamfiset/algorithms/graphtheory/FloydWarshallSolver.java) **- O(V<sup>3</sup>)**
-- [Graph diameter (adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/GraphDiameter.java) **- O(VE)**
 - [:movie_camera:](https://www.youtube.com/watch?v=cIBFEhD77b4) [Kahn's algorithm (topological sort, adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/Kahns.java) **- O(E+V)**
 - [Kruskal's min spanning tree algorithm (edge list, union find)](src/main/java/com/williamfiset/algorithms/graphtheory/KruskalsEdgeList.java) **- O(Elog(E))**
-- [:movie_camera:](https://www.youtube.com/watch?v=JZBQLXgSGfs) [Kruskal's min spanning tree algorithm (edge list, union find, lazy sorting)](src/main/java/com/williamfiset/algorithms/graphtheory/KruskalsEdgeListPartialSortSolver.java) **- O(Elog(E))**
 - [Kosaraju's strongly connected components algorithm (adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/Kosaraju.java) **- O(V+E)**
 - [:movie_camera:](https://www.youtube.com/watch?v=jsmMtJpPnhU) [Prim's min spanning tree algorithm (lazy version, adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/LazyPrimsAdjacencyList.java) **- O(Elog(E))**
-- [Prim's min spanning tree algorithm (lazy version, adjacency matrix)](src/main/java/com/williamfiset/algorithms/graphtheory/LazyPrimsAdjacencyMatrix.java) **- O(V<sup>2</sup>)**
 - [:movie_camera:](https://www.youtube.com/watch?v=xq3ABa-px_g) [Prim's min spanning tree algorithm (eager version, adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/EagerPrimsAdjacencyList.java) **- O(Elog(V))**
-- [Steiner tree (minimum spanning tree generalization)](src/main/java/com/williamfiset/algorithms/graphtheory/SteinerTree.java) **- O(V<sup>3</sup> + V<sup>2</sup> _ 2<sup>T</sup> + V _ 3<sup>T</sup>)**
+- [Steiner tree (minimum spanning tree generalization)](src/main/java/com/williamfiset/algorithms/graphtheory/SteinerTree.java) **- O(V<sup>3</sup> + V<sup>2</sup> · 2<sup>T</sup> + V · 3<sup>T</sup>)**
 - [:movie_camera:](https://www.youtube.com/watch?v=wUgWX0nc4NY) [Tarjan's strongly connected components algorithm (adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/TarjanSccSolverAdjacencyList.java) **- O(V+E)**
 - [:movie_camera:](https://www.youtube.com/watch?v=eL-KzMXSXXI) [Topological sort (acyclic graph, adjacency list)](src/main/java/com/williamfiset/algorithms/graphtheory/TopologicalSortAdjacencyList.java) **- O(V+E)**
-- [Topological sort (acyclic graph, adjacency matrix)](src/main/java/com/williamfiset/algorithms/graphtheory/TopologicalSortAdjacencyMatrix.java) **- O(V<sup>2</sup>)**
-- [Traveling Salesman Problem (brute force)](src/main/java/com/williamfiset/algorithms/graphtheory/TspBruteForce.java) **- O(n!)**
 - [:movie_camera:](https://www.youtube.com/watch?v=cY4HiiFHO1o) [Traveling Salesman Problem (dynamic programming, iterative)](src/main/java/com/williamfiset/algorithms/graphtheory/TspDynamicProgrammingIterative.java) **- O(n<sup>2</sup>2<sup>n</sup>)**
 - [Traveling Salesman Problem (dynamic programming, recursive)](src/main/java/com/williamfiset/algorithms/graphtheory/TspDynamicProgrammingRecursive.java) **- O(n<sup>2</sup>2<sup>n</sup>)**
 
@@ -252,19 +239,18 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 
 # Mathematics
 
-- [[UNTESTED] Chinese remainder theorem](src/main/java/com/williamfiset/algorithms/math/ChineseRemainderTheorem.java)
+- [Chinese remainder theorem](src/main/java/com/williamfiset/algorithms/math/ChineseRemainderTheorem.java)
 - [Prime number sieve (sieve of Eratosthenes)](src/main/java/com/williamfiset/algorithms/math/SieveOfEratosthenes.java) **- O(nlog(log(n)))**
 - [Prime number sieve (sieve of Eratosthenes, compressed)](src/main/java/com/williamfiset/algorithms/math/CompressedPrimeSieve.java) **- O(nlog(log(n)))**
-- [Totient function (phi function, relatively prime number count)](src/main/java/com/williamfiset/algorithms/math/EulerTotientFunction.java) **- O(n<sup>1/4</sup>)**
-- [Totient function using sieve (phi function, relatively prime number count)](src/main/java/com/williamfiset/algorithms/math/EulerTotientFunctionWithSieve.java) **- O(nlog(log(n)))**
+- [Totient function (phi function, relatively prime number count)](src/main/java/com/williamfiset/algorithms/math/EulerTotientFunction.java) **- O(√n)**
 - [Extended euclidean algorithm](src/main/java/com/williamfiset/algorithms/math/ExtendedEuclideanAlgorithm.java) **- ~O(log(a + b))**
-- [Greatest Common Divisor (GCD)](src/main/java/com/williamfiset/algorithms/math/GCD.java) **- ~O(log(a + b))**
+- [Greatest Common Divisor (GCD)](src/main/java/com/williamfiset/algorithms/math/Gcd.java) **- ~O(log(a + b))**
 - [Fast Fourier transform (quick polynomial multiplication)](src/main/java/com/williamfiset/algorithms/math/FastFourierTransform.java) **- O(nlog(n))**
 - [Fast Fourier transform (quick polynomial multiplication, complex numbers)](src/main/java/com/williamfiset/algorithms/math/FastFourierTransformComplexNumbers.java) **- O(nlog(n))**
-- [Primality check](src/main/java/com/williamfiset/algorithms/math/IsPrime.java) **- O(√n)**
-- [Primality check (Rabin-Miller)](src/main/java/com/williamfiset/algorithms/math/RabinMillerPrimalityTest.py) **- O(k)**
-- [Least Common Multiple (LCM)](src/main/java/com/williamfiset/algorithms/math/LCM.java) **- ~O(log(a + b))**
+- [Primality check](src/main/java/com/williamfiset/algorithms/math/PrimalityCheck.java) **- O(√n)**
+- [Least Common Multiple (LCM)](src/main/java/com/williamfiset/algorithms/math/Lcm.java) **- ~O(log(a + b))**
 - [Modular inverse](src/main/java/com/williamfiset/algorithms/math/ModularInverse.java) **- ~O(log(a + b))**
+- [Modular exponentiation](src/main/java/com/williamfiset/algorithms/math/ModPow.java) **- O(log(n))**
 - [Prime factorization (pollard rho)](src/main/java/com/williamfiset/algorithms/math/PrimeFactorization.java) **- O(n<sup>1/4</sup>)**
 - [Relatively prime check (coprimality check)](src/main/java/com/williamfiset/algorithms/math/RelativelyPrime.java) **- ~O(log(a + b))**
 
@@ -272,18 +258,17 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 
 - [Bit manipulations](src/main/java/com/williamfiset/algorithms/other/BitManipulations.java) **- O(1)**
 - [List permutations](src/main/java/com/williamfiset/algorithms/other/Permutations.java) **- O(n!)**
-- [:movie_camera:](https://www.youtube.com/watch?v=RnlHPR0lyOE) [Power set (set of all subsets)](src/main/java/com/williamfiset/algorithms/other/PowerSet.java) **- O(2<sup>n</sup>)**
+- [:movie_camera:](https://www.youtube.com/watch?v=RnlHPR0lyOE) [Power set (set of all subsets)](src/main/java/com/williamfiset/algorithms/other/PowerSet.java) **- O(n · 2<sup>n</sup>)**
 - [Set combinations](src/main/java/com/williamfiset/algorithms/other/Combinations.java) **- O(n choose r)**
 - [Set combinations with repetition](src/main/java/com/williamfiset/algorithms/other/CombinationsWithRepetition.java) **- O((n+r-1) choose r)**
 - [Sliding Window Minimum/Maximum](src/main/java/com/williamfiset/algorithms/other/SlidingWindowMaximum.java) **- O(1)**
 - [Square Root Decomposition](src/main/java/com/williamfiset/algorithms/other/SquareRootDecomposition.java) **- O(1) point updates, O(√n) range queries**
 - [Unique set combinations](src/main/java/com/williamfiset/algorithms/other/UniqueCombinations.java) **- O(n choose r)**
-- [Lazy Range Adder](src/main/java/com/williamfiset/algorithms/other/LazyRangeAdder.java) **- O(1) range updates, O(n) to finalize all updates**
 
 # Search algorithms
 
 - [Binary search (real numbers)](src/main/java/com/williamfiset/algorithms/search/BinarySearch.java) **- O(log(n))**
-- [Interpolation search (discrete discrete)](src/main/java/com/williamfiset/algorithms/search/InterpolationSearch.java) **- O(n) or O(log(log(n))) with uniform input**
+- [Interpolation search (discrete numbers)](src/main/java/com/williamfiset/algorithms/search/InterpolationSearch.java) **- O(n) or O(log(log(n))) with uniform input**
 - [Ternary search (real numbers)](src/main/java/com/williamfiset/algorithms/search/TernarySearch.java) **- O(log(n))**
 - [Ternary search (discrete numbers)](src/main/java/com/williamfiset/algorithms/search/TernarySearchDiscrete.java) **- O(log(n))**
 
@@ -294,10 +279,12 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 - [Counting sort](src/main/java/com/williamfiset/algorithms/sorting/CountingSort.java) **- O(n + k)**
 - [Heapsort](src/main/java/com/williamfiset/algorithms/sorting/Heapsort.java) **- O(nlog(n))**
 - [Insertion sort](src/main/java/com/williamfiset/algorithms/sorting/InsertionSort.java) **- O(n<sup>2</sup>)**
-- [Mergesort](src/main/java/com/williamfiset/algorithms/sorting/MergeSort.java) **- O(nlog(n))**
+- [:movie_camera:](https://www.youtube.com/watch?v=-3u1C1URNZY) [Mergesort](src/main/java/com/williamfiset/algorithms/sorting/MergeSort.java) **- O(nlog(n))**
 - [Quicksort (in-place, Hoare partitioning)](src/main/java/com/williamfiset/algorithms/sorting/QuickSort.java) **- Θ(nlog(n))**
 - [Quicksort3 (Dutch National Flag algorithm)](src/main/java/com/williamfiset/algorithms/sorting/QuickSort3.java) **- Θ(nlog(n))**
 - [Selection sort](src/main/java/com/williamfiset/algorithms/sorting/SelectionSort.java) **- O(n<sup>2</sup>)**
+- [Shell sort](src/main/java/com/williamfiset/algorithms/sorting/ShellSort.java) **- O(n<sup>2</sup>) worst, ~O(n<sup>1.5</sup>) average**
+- [Tim sort](src/main/java/com/williamfiset/algorithms/sorting/TimSort.java) **- O(nlog(n))**
 - [Radix sort](src/main/java/com/williamfiset/algorithms/sorting/RadixSort.java) **- O(n\*w)**
 
 # String algorithms
@@ -315,8 +302,8 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 
 This repository is released under the [MIT license](https://opensource.org/licenses/MIT). In short, this means you are free to use this software in any personal, open-source or commercial projects. Attribution is optional but appreciated.
 
-# Donate
+# Sponsor
 
-Consider donating to support my creation of educational content:
+Consider sponsoring to support my creation of educational content:
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=JUP2HZ6JUPB5C)
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa.svg)](https://github.com/sponsors/williamfiset)

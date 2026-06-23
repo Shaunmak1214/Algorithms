@@ -1,47 +1,70 @@
 package com.williamfiset.algorithms.datastructures.trie;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 public class TrieTest {
 
-  // @Before public void setup() { }
-
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadTrieDelete1() {
-    Trie t = new Trie();
-    t.insert("some string");
-    t.delete("some string", 0);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          Trie t = new Trie();
+          t.insert("some string");
+          t.delete("some string", 0);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadTrieDelete2() {
-    Trie t = new Trie();
-    t.insert("some string");
-    t.delete("some string", -1);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          Trie t = new Trie();
+          t.insert("some string");
+          t.delete("some string", -1);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadTrieDelete3() {
-    Trie t = new Trie();
-    t.insert("some string");
-    t.delete("some string", -345);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          Trie t = new Trie();
+          t.insert("some string");
+          t.delete("some string", -345);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadTrieInsert() {
-    (new Trie()).insert(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          (new Trie()).insert(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadTrieCount() {
-    (new Trie()).count(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          (new Trie()).count(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadTrieContains() {
-    (new Trie()).contains(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          (new Trie()).contains(null);
+        });
   }
 
   @Test
@@ -161,33 +184,42 @@ public class TrieTest {
   public void testInsert() {
 
     Trie t = new Trie();
+    // First insert of each word returns false (word didn't exist yet)
     assertThat(t.insert("a")).isFalse();
     assertThat(t.insert("b")).isFalse();
     assertThat(t.insert("c")).isFalse();
     assertThat(t.insert("d")).isFalse();
     assertThat(t.insert("x")).isFalse();
 
+    // "ab" is a new word even though prefix "a" exists
+    assertThat(t.insert("ab")).isFalse();
+    assertThat(t.insert("xkcd")).isFalse();
+    assertThat(t.insert("dogs")).isFalse();
+    assertThat(t.insert("bears")).isFalse();
+
+    // Duplicate inserts return true (word already exists)
+    assertThat(t.insert("a")).isTrue();
     assertThat(t.insert("ab")).isTrue();
     assertThat(t.insert("xkcd")).isTrue();
-    assertThat(t.insert("dogs")).isTrue();
-    assertThat(t.insert("bears")).isTrue();
 
     assertThat(t.insert("mo")).isFalse();
-    assertThat(t.insert("mooooose")).isTrue();
+    assertThat(t.insert("mooooose")).isFalse();
 
     t.clear();
 
     assertThat(t.insert("aaaa", 4)).isFalse();
     assertThat(t.count("aaaa")).isEqualTo(4);
 
-    assertThat(t.insert("aaa", 3)).isTrue();
+    // "aaa" is a new word even though "aaaa" passes through it
+    assertThat(t.insert("aaa", 3)).isFalse();
     assertThat(t.count("a")).isEqualTo(7);
     assertThat(t.count("aa")).isEqualTo(7);
     assertThat(t.count("aaa")).isEqualTo(7);
     assertThat(t.count("aaaa")).isEqualTo(4);
     assertThat(t.count("aaaaa")).isEqualTo(0);
 
-    assertThat(t.insert("a", 5)).isTrue();
+    // "a" was never explicitly inserted, so this is a new word
+    assertThat(t.insert("a", 5)).isFalse();
     assertThat(t.count("a")).isEqualTo(12);
     assertThat(t.count("aa")).isEqualTo(7);
     assertThat(t.count("aaa")).isEqualTo(7);

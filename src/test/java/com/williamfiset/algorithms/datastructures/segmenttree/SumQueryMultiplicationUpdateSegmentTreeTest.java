@@ -1,21 +1,19 @@
 /**
- * gradle test --info --tests
- * "com.williamfiset.algorithms.datastructures.segmenttree.SumQueryMultiplicationUpdateSegmentTreeTest"
+ * bazel test //src/test/java/com/williamfiset/algorithms/datastructures/segmenttree:SumQueryMultiplicationUpdateSegmentTreeTest
  */
 package com.williamfiset.algorithms.datastructures.segmenttree;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import com.williamfiset.algorithms.utils.TestUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class SumQueryMultiplicationUpdateSegmentTreeTest {
 
   static int ITERATIONS = 100;
   static int MAX_N = 28;
 
-  @Before
+  @BeforeEach
   public void setup() {}
 
   @Test

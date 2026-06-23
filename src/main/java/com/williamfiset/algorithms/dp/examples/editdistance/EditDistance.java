@@ -1,5 +1,4 @@
-import java.io.*;
-import java.util.*;
+package com.williamfiset.algorithms.dp.examples.editdistance;
 
 public class EditDistance {
 

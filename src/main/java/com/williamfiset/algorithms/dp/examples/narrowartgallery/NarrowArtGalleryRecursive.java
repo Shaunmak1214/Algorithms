@@ -1,3 +1,5 @@
+package com.williamfiset.algorithms.dp.examples.narrowartgallery;
+
 /**
  * Solution to the Narrow Art Gallery problem from the 2014 ICPC North America Qualifier
  *
@@ -47,9 +49,9 @@ public class NarrowArtGalleryRecursive {
       return INF;
     }
     // Return the value of this subproblem, if it's already been computed.
-    // if (dp[k][r][c] != null) {
-    //   return dp[k][r][c];
-    // }
+    if (dp[k][r][c] != null) {
+      return dp[k][r][c];
+    }
     // Get the value of the current room at row `r` and column `c`.
     int roomValue = gallery[r][c];
     return dp[k][r][c] =

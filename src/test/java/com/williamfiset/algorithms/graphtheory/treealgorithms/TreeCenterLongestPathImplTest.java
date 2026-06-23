@@ -1,7 +1,6 @@
 // To run this test in isolation from root folder:
 //
-// $ gradle test --tests
-// com.williamfiset.algorithms.graphtheory.treealgorithms.TreeCenterLongestPathImplTest
+// $ bazel test //src/test/java/com/williamfiset/algorithms/graphtheory/treealgorithms:TreeCenterLongestPathImplTest
 
 package com.williamfiset.algorithms.graphtheory.treealgorithms;
 
@@ -11,7 +10,7 @@ import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeCenterL
 import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeCenterLongestPathImpl.findTreeCenters;
 
 import java.util.*;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 public class TreeCenterLongestPathImplTest {
 
